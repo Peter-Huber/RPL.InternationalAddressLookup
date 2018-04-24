@@ -1,0 +1,75 @@
+﻿@model WebServerPostcodeLookup.Models.HomeModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>@Model.Error</h1>
+    @*<p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+        <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>*@
+    <h3>@Model.CurrentCountry</h3>
+</div>
+
+@using (Html.BeginForm())
+{
+    <br />
+    <div class="row">
+        @Html.LabelFor(m => m.PostcodeSearch)
+        @Html.TextBoxFor(m => m.PostcodeSearch)
+    </div>
+    <div class="row">
+        @Html.LabelFor(m => m.CountrySearch)
+        @Html.DropDownListFor(m => m.CountrySearch, Model.Countries)
+    </div>
+    if (Model.AddressList != null)
+    {
+        <div class="row">
+            @Html.LabelFor(m => m.AddressList)
+            @Html.DropDownListFor(m => m.AddressSelected, Model.AddressList)
+        </div>
+    }
+
+    <div class="row">
+        <input type="submit" name="submit" value="Submit" />
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.AddressSelected))
+{
+    <div class="row">
+        <div class="col">
+            @Model.List
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            Organisation :   @Model.Organisation
+        </div>
+        <div class="col">
+            Property :   @Model.Property
+        </div>
+        <div class="col">
+            Street :   @Model.Street
+        </div>
+        <div class="col">
+            Locality :    @Model.Locality
+        </div>
+        <div class="col">
+            Town :   @Model.Town
+        </div>
+        <div class="col">
+            Postcode :    @Model.Postcode
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+        $.getJSON('https://json.geoiplookup.io/api', function (data) {
+            var dataStr = JSON.stringify(data, null, 2);
+            console.log(dataStr);
+            console.log("country to lookup: " + data.country_name);
+        });
+    </script>
+}
